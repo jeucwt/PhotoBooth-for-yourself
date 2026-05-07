@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PhotoBooth 📷</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>📷 PhotoBooth</h1>
+  </header>
+
+  <!-- ===== BƯỚC 1: CHỤP ẢNH ===== -->
+  <section id="buoc-1">
+
+    <div class="camera-wrap">
+      <!-- Màn hình camera -->
+      <div class="camera-box">
+        <video id="video" autoplay playsinline muted></video>
+        <div id="dem-nguoc"></div>
+        <div id="flash"></div>
+      </div>
+
+      <!-- Nút điều khiển -->
+      <div class="dieu-khien">
+        <button onclick="batCamera()">Bật Camera</button>
+        <button id="btn-chup" onclick="batDauChup()" disabled>📸 Chụp </button>
+        <button id="btn-xoa-het" onclick="xoaHet()" style="display:none">🗑 Chụp lại</button>
+      </div>
+
+      <!-- Chọn đếm ngược -->
+      <div class="chon-dem">
+        <span>Đếm ngược:</span>
+        <label><input type="radio" name="dem" value="3" checked> 3s</label>
+        <label><input type="radio" name="dem" value="5"> 5s</label>
+        <label><input type="radio" name="dem" value="10"> 10s</label>
+      </div>
+
+      <!-- Thanh tiến độ -->
+      <div class="tien-do">
+        <span id="so-anh">0 / 8 ảnh</span>
+        <div class="thanh-nen">
+          <div id="thanh-tien-do"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ảnh đã chụp -->
+    <div class="anh-da-chup">
+      <h3>Ảnh đã chụp</h3>
+      <div id="luoi-anh"></div>
+      <button id="btn-chon-anh" onclick="sangBuoc2()" style="display:none">
+        ✿ Chọn 4 ảnh yêu thích →
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- ===== BƯỚC 2: CHỌN 4 ẢNH ===== -->
+  <section id="buoc-2" style="display:none">
+
+    <div class="dau-trang">
+      <button onclick="quayLai(1)">← Quay lại</button>
+      <h2>Chọn 4 ảnh yêu thích</h2>
+      <button id="btn-sang-frame" onclick="sangBuoc3()" disabled>→ Chọn frame</button>
+    </div>
+
+    <p class="huong-dan">Bấm vào ảnh để chọn. Đã chọn: <strong id="so-da-chon">0</strong>/4</p>
+
+    <div id="luoi-chon"></div>
+
+  </section>
+
+
+  <!-- ===== BƯỚC 3: CHỌN FRAME ===== -->
+  <section id="buoc-3" style="display:none">
+
+    <div class="dau-trang">
+      <button onclick="quayLai(2)">← Quay lại</button>
+      <h2>Chọn frame</h2>
+      <button onclick="sangBuoc4()">→ Xem kết quả</button>
+    </div>
+
+    <!-- Upload frame của bạn -->
+    <div class="frame-upload">
+      <h3>📁 Upload frame của bạn</h3>
+      <p>Frame phải là ảnh PNG có nền trong suốt, kích thước gợi ý: 400×1200px</p>
+      <input type="file" id="upload-frame" accept="image/png,image/jpeg" onchange="uploadFrame(this)">
+    </div>
+
+    <!-- Các frame có sẵn -->
+    <div class="frame-co-san">
+      <h3>✿ Frame có sẵn</h3>
+      <div id="danh-sach-frame"></div>
+    </div>
+
+    <!-- Xem trước -->
+    <div class="xem-truoc">
+      <h3>Xem trước</h3>
+      <canvas id="canvas-truoc" width="400" height="1200"></canvas>
+    </div>
+
+  </section>
+
+
+  <!-- ===== BƯỚC 4: LƯU ẢNH ===== -->
+  <section id="buoc-4" style="display:none">
+
+    <div class="dau-trang">
+      <button onclick="quayLai(3)">← Quay lại</button>
+      <h2>🎉 Xong rồi!</h2>
+    </div>
+
+    <div class="luu-anh">
+      <canvas id="canvas-cuoi" width="400" height="1200"></canvas>
+      <div class="nut-luu">
+        <button onclick="taiAnh()">⬇ Tải ảnh về</button>
+        <button onclick="batDauLai()">🔄 Chụp lại từ đầu</button>
+      </div>
+    </div>
+
+  </section>
+
+
+  <script src="app.js"></script>
+</body>
+
+</html>

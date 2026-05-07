@@ -1,0 +1,383 @@
+/* =============================================
+   PHOTOBOOTH - VINTAGE / RETRO STYLE
+   Màu chính: kem (#ede8df) + xanh rêu (#7a8a6e)
+   Dễ chỉnh sửa: đổi màu ở phần :root bên dưới
+   ============================================= */
+
+/* --- MÀU SẮC (chỉnh ở đây để đổi toàn bộ giao diện) --- */
+:root {
+  --kem:       #ede8df;   /* màu nền chính */
+  --kem-dam:   #ddd5c6;   /* nền card, sidebar */
+  --xanh-reu:  #7a8a6e;   /* màu chủ đạo (nút, viền, chữ đậm) */
+  --xanh-nhat: #a8b89c;   /* màu phụ nhạt hơn */
+  --trang:     #faf8f4;   /* trắng kem */
+  --xam:       #9a9085;   /* chữ mờ */
+  --den:       #3a3530;   /* chữ chính */
+}
+
+/* --- RESET CƠ BẢN --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--kem);
+  color: var(--den);
+  font-family: Georgia, serif;   /* font cổ điển, dễ đổi */
+  font-size: 15px;
+  min-height: 100vh;
+}
+
+/* --- HEADER --- */
+header {
+  background: var(--xanh-reu);
+  color: var(--kem);
+  text-align: center;
+  padding: 20px;
+  border-bottom: 3px solid var(--den);
+}
+header h1 { font-size: 1.8rem; margin-bottom: 4px; }
+header p  { font-size: 0.9rem; opacity: 0.85; }
+
+/* --- TIÊU ĐỀ ĐẦU TRANG (nút quay lại + tên bước) --- */
+.dau-trang {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dau-trang h2 { font-size: 1.3rem; flex: 1; }
+
+/* --- SECTION (mỗi bước là 1 section) --- */
+section {
+  max-width: 960px;
+  margin: 28px auto;
+  padding: 0 20px;
+}
+
+/* =============================================
+   BƯỚC 1 - CAMERA
+   ============================================= */
+
+/* Bố cục 2 cột: camera | ảnh đã chụp */
+#buoc-1 {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: stretch;   /* kéo dài cột phải bằng cột trái */
+}
+
+/* Cột trái: camera + nút */
+.camera-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+/* Khung camera */
+.camera-box {
+  position: relative;
+  background: var(--kem-dam);
+  border: 2px solid var(--xanh-reu);
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  min-height: 300px;
+}
+.camera-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scaleX(-1);  /* lật gương */
+}
+
+/* Số đếm ngược (hiện giữa màn hình khi đang chụp) */
+#dem-nguoc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* Hiệu ứng flash khi chụp */
+#flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+#flash.hien { opacity: 0.85; }
+
+/* Nút điều khiển */
+.dieu-khien { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Chọn thời gian đếm ngược */
+.chon-dem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--xam);
+}
+.chon-dem label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* Thanh tiến độ */
+.tien-do { }
+#so-anh {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--xam);
+  margin-bottom: 5px;
+}
+.thanh-nen {
+  height: 5px;
+  background: var(--kem-dam);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid var(--xanh-nhat);
+}
+#thanh-tien-do {
+  height: 100%;
+  width: 0%;
+  background: var(--xanh-reu);
+  border-radius: 99px;
+  transition: width 0.3s;
+}
+
+/* Cột phải: ảnh đã chụp */
+.anh-da-chup {
+  background: var(--trang);
+  border: 2px solid var(--xanh-reu);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 360px;   /* chiều cao tối thiểu */
+  overflow-y: auto;
+}
+.anh-da-chup h3 { font-size: 0.95rem; color: var(--xanh-reu); }
+
+/* Lưới ảnh thumbnail 2 cột */
+#luoi-anh {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+/* Mỗi ảnh thumbnail */
+.thumb {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  border: 1.5px solid var(--kem-dam);
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Số thứ tự */
+.thumb .so { 
+  position: absolute;
+  top: 3px; left: 3px;
+  background: rgba(255,255,255,0.8);
+  font-size: 0.65rem;
+  font-weight: bold;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Nút xóa từng ảnh */
+.thumb .xoa {
+  position: absolute;
+  top: 3px; right: 3px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid var(--xanh-reu);
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: none;
+  align-items: center; justify-content: center;
+  color: var(--xanh-reu);
+}
+.thumb:hover .xoa { display: flex; }
+
+
+/* =============================================
+   BƯỚC 2 - CHỌN ẢNH
+   ============================================= */
+
+.huong-dan {
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+  color: var(--xam);
+}
+
+/* Lưới 4 cột để hiển thị 8 ảnh */
+#luoi-chon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Mỗi ảnh trong bước chọn */
+.anh-chon {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  border: 2px solid var(--kem-dam);
+  cursor: pointer;
+}
+.anh-chon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Khi đã chọn: viền xanh rêu */
+.anh-chon.da-chon { border-color: var(--xanh-reu); }
+
+/* Số thứ tự khi chọn */
+.anh-chon .badge {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: var(--xanh-reu);
+  color: var(--kem);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: none;
+  align-items: center; justify-content: center;
+}
+.anh-chon.da-chon .badge { display: flex; }
+
+/* Lớp phủ xanh nhạt khi chọn */
+.anh-chon .phu {
+  position: absolute;
+  inset: 0;
+  background: rgba(122, 138, 110, 0.2);
+  display: none;
+}
+.anh-chon.da-chon .phu { display: block; }
+
+
+/* =============================================
+   BƯỚC 3 - FRAME
+   ============================================= */
+
+/* Upload frame */
+.frame-upload {
+  background: var(--trang);
+  border: 2px dashed var(--xanh-nhat);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.frame-upload h3 { margin-bottom: 6px; font-size: 0.95rem; color: var(--xanh-reu); }
+.frame-upload p  { font-size: 0.8rem; color: var(--xam); margin-bottom: 10px; }
+.frame-upload input[type="file"] { font-size: 0.85rem; }
+
+/* Frame có sẵn */
+.frame-co-san { margin-bottom: 24px; }
+.frame-co-san h3 { margin-bottom: 12px; font-size: 0.95rem; color: var(--xanh-reu); }
+
+/* Bố cục: danh sách frame | xem trước */
+#buoc-3 {
+  display: block;  /* đơn cột, không chia lưới */
+}
+/* (Xem trước và danh sách frame xếp dọc cho đơn giản) */
+
+#danh-sach-frame {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Mỗi ô frame để chọn */
+.frame-item {
+  border: 2px solid var(--kem-dam);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--xam);
+  background: var(--trang);
+  transition: border-color 0.15s;
+}
+.frame-item:hover { border-color: var(--xanh-nhat); }
+.frame-item.da-chon { border-color: var(--xanh-reu); color: var(--xanh-reu); font-weight: bold; }
+.frame-item img {
+  width: 60px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 4px;
+  border-radius: 4px;
+}
+
+/* Canvas xem trước */
+.xem-truoc { text-align: center; }
+.xem-truoc h3 { margin-bottom: 12px; font-size: 0.95rem; color: var(--xanh-reu); }
+#canvas-truoc {
+  border: 2px solid var(--xanh-reu);
+  border-radius: 6px;
+  max-width: 300px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+
+/* =============================================
+   BƯỚC 4 - LƯU ẢNH
+   ============================================= */
+
+.luu-anh {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+#canvas-cuoi {
+  border: 2px solid var(--xanh-reu);
+  border-radius: 6px;
+  max-width: 320px;
+  height: auto;
+  display: block;
+}
+.nut-luu { display: flex; gap: 12px; }
+
+
+/* =============================================
+   NÚT BẤM CHUNG
+   Tất cả nút dùng 1 kiểu duy nhất, đơn giản
+   ============================================= */
+button {
+  background: var(--xanh-reu);
+  color: var(--kem);
+  border: 2px solid var(--den);
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-family: Georgia, serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+button:hover { background: var(--xanh-nhat); }
+button:disabled { background: var(--kem-dam); color: var(--xam); cursor: not-allowed; }
+
+
+/* =============================================
+   RESPONSIVE (màn hình nhỏ)
+   ============================================= */
+@media (max-width: 700px) {
+  #buoc-1 { grid-template-columns: 1fr; }
+  #luoi-chon { grid-template-columns: repeat(2, 1fr); }
+}
